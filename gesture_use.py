@@ -118,16 +118,16 @@ def recognize_gestures(add_to_sentences=True):
         for i, completed_sentence in enumerate(completed_sentences):
             cv2.putText(expanded_img, str(i) + " : " + completed_sentence, (img.shape[1] + 10, 30 * (i + 1)), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
 
-        # # Check for completion gesture (e.g., all fingers touching)
-        # if '0' in hand_results and sentence != '':
-        #     if add_to_sentences:
-        #         # Add the completed sentence to the array
-        #         completed_sentences.append(sentence)
-        #         print("Completed Sentence: ", sentence)
-        #     else:
-        #         if completed_sentences:
-        #             sentence = completed_sentences.pop(0)
-        #             print("Displaying Sentence: ", sentence)
+        # Check for completion gesture (e.g., all fingers touching)
+        if '0' in hand_results and sentence != '':
+            if add_to_sentences:
+                # Add the completed sentence to the array
+                completed_sentences.append(sentence)
+                print("Completed Sentence: ", sentence)
+            # else:
+            #     if completed_sentences:
+            #         sentence = completed_sentences.pop(0)
+            #         print("Displaying Sentence: ", sentence)
 
             # Clear the sentence
             sentence = ""
@@ -141,13 +141,10 @@ def recognize_gestures(add_to_sentences=True):
 
     cap.release()
     cv2.destroyAllWindows()
+    
+    return completed_sentences
 
-def print_completed_sentences():
-    print("All completed sentences:")
-    for s in completed_sentences:
-        print(s)
-
-def use_gestures(add_to_sentences=True):
+def use_gestures():
     global sentence, last_character, current_character, gesture_count
 
     cap = cv2.VideoCapture(0)
@@ -186,19 +183,21 @@ def use_gestures(add_to_sentences=True):
             if len(hand_results) == 1:
                 text = hand_results[0]
                 temp = int(text)
-                if temp in alphabet_gesture:
-                    text = alphabet_gesture[temp]
-                    if text != current_character:
-                        gesture_count = 0  # Reset the gesture count if a different character is detected
-                    else:
-                        gesture_count += 1  # Increment the gesture count if the same character is detected
+                # if temp in alphabet_gesture:
+                #     text = alphabet_gesture[temp]
+                #     if text != current_character:
+                #         gesture_count = 0  # Reset the gesture count if a different character is detected
+                #     else:
+                #         gesture_count += 1  # Increment the gesture count if the same character is detected
 
-                    if gesture_count >= gesture_threshold:
-                        if text != last_character:
-                            sentence += text  # Add recognized letter to sentence
-                            last_character = text
-                        gesture_count = 0  # Reset the gesture count after adding the character
-                    current_character = text
+                #     if gesture_count >= gesture_threshold:
+                #         if text != last_character:
+                #             sentence += text  # Add recognized letter to sentence
+                #             last_character = text
+                #         gesture_count = 0  # Reset the gesture count after adding the character
+                #     current_character = text
+                if temp < len(completed_sentences):
+                    text = completed_sentences[temp]
                 else:
                     text = "?"
 
@@ -210,19 +209,21 @@ def use_gestures(add_to_sentences=True):
             elif len(hand_results) == 2:
                 combined_text = hand_results[1] + hand_results[0]
                 temp = int(combined_text)
-                if temp in alphabet_gesture:
-                    text = alphabet_gesture[temp]
-                    if text != current_character:
-                        gesture_count = 0  # Reset the gesture count if a different character is detected
-                    else:
-                        gesture_count += 1  # Increment the gesture count if the same character is detected
+                # if temp in alphabet_gesture:
+                #     text = alphabet_gesture[temp]
+                #     if text != current_character:
+                #         gesture_count = 0  # Reset the gesture count if a different character is detected
+                #     else:
+                #         gesture_count += 1  # Increment the gesture count if the same character is detected
 
-                    if gesture_count >= gesture_threshold:
-                        if text != last_character:
-                            sentence += text  # Add recognized letter to sentence
-                            last_character = text
-                        gesture_count = 0  # Reset the gesture count after adding the character
-                    current_character = text
+                #     if gesture_count >= gesture_threshold:
+                #         if text != last_character:
+                #             sentence += text  # Add recognized letter to sentence
+                #             last_character = text
+                #         gesture_count = 0  # Reset the gesture count after adding the character
+                #     current_character = text
+                if temp < len(completed_sentences):
+                    text = completed_sentences[temp]
                 else:
                     text = "?"
 
@@ -247,10 +248,10 @@ def use_gestures(add_to_sentences=True):
         #         # Add the completed sentence to the array
         #         completed_sentences.append(sentence)
         #         print("Completed Sentence: ", sentence)
-        #     else:
-        #         if completed_sentences:
-        #             sentence = completed_sentences.pop(0)
-        #             print("Displaying Sentence: ", sentence)
+            # else:
+            #     if completed_sentences:
+            #         sentence = completed_sentences.pop(0)
+            #         print("Displaying Sentence: ", sentence)
 
             # Clear the sentence
             sentence = ""
@@ -264,6 +265,11 @@ def use_gestures(add_to_sentences=True):
 
     cap.release()
     cv2.destroyAllWindows()
+
+def print_completed_sentences():
+    print("All completed sentences:")
+    for s in completed_sentences:
+        print(s)
 
 
 # 잘못 들어간 문장 삭제

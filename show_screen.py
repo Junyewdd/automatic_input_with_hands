@@ -10,7 +10,7 @@ def show_let_start_screen():
     cv2.putText(img, "Let's Start", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 3)
     # Display the image
     cv2.imshow('Alphabet Recognition', img)
-    cv2.waitKey(3000)  # Display the image for 3 seconds
+    cv2.waitKey(1000)  # Display the image for 3 seconds
     cv2.destroyAllWindows()
     
 def show_hi_screen():
