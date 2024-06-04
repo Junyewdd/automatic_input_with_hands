@@ -16,9 +16,12 @@ hands = mp_hands.Hands(
 # Load gesture recognition model
 knn = load_gesture_model()
 
-# Initialize sentence storage
+# Initialize variables
 sentence = ""
 last_character = ""
+current_character = ""
+gesture_count = 0
+gesture_threshold = 3
 
 # Start video capture
 cap = cv2.VideoCapture(0)
@@ -55,9 +58,17 @@ while cap.isOpened():
             temp = int(text)
             if temp in alphabet_gesture:
                 text = alphabet_gesture[temp]
-                if text != last_character:
-                    sentence += text  # Add recognized letter to sentence
-                    last_character = text
+                if text != current_character:
+                    gesture_count = 0  # Reset the gesture count if a different character is detected
+                else:
+                    gesture_count += 1  # Increment the gesture count if the same character is detected
+
+                if gesture_count >= gesture_threshold:
+                    if text != last_character:
+                        sentence += text  # Add recognized letter to sentence
+                        last_character = text
+                    gesture_count = 0  # Reset the gesture count after adding the character
+                current_character = text
             else:
                 text = "?"
 
@@ -71,9 +82,17 @@ while cap.isOpened():
             temp = int(combined_text)
             if temp in alphabet_gesture:
                 text = alphabet_gesture[temp]
-                if text != last_character:
-                    sentence += text  # Add recognized letter to sentence
-                    last_character = text
+                if text != current_character:
+                    gesture_count = 0  # Reset the gesture count if a different character is detected
+                else:
+                    gesture_count += 1  # Increment the gesture count if the same character is detected
+
+                if gesture_count >= gesture_threshold:
+                    if text != last_character:
+                        sentence += text  # Add recognized letter to sentence
+                        last_character = text
+                    gesture_count = 0  # Reset the gesture count after adding the character
+                current_character = text
             else:
                 text = "?"
 
@@ -93,6 +112,8 @@ while cap.isOpened():
         # Clear the sentence
         sentence = ""
         last_character = ""
+        current_character = ""
+        gesture_count = 0
 
     cv2.imshow('Alphabet Recognition', img)
     if cv2.waitKey(1) == ord('q'):
