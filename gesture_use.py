@@ -119,7 +119,7 @@ def recognize_gestures(add_to_sentences=True):
             cv2.putText(expanded_img, str(i) + " : " + completed_sentence, (img.shape[1] + 10, 30 * (i + 1)), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
 
         # Check for completion gesture (e.g., all fingers touching)
-        if '0' in hand_results and sentence != '':
+        if '0' in hand_results and sentence != '' and sentence not in completed_sentences:
             if add_to_sentences:
                 # Add the completed sentence to the array
                 completed_sentences.append(sentence)
@@ -183,19 +183,6 @@ def use_gestures():
             if len(hand_results) == 1:
                 text = hand_results[0]
                 temp = int(text)
-                # if temp in alphabet_gesture:
-                #     text = alphabet_gesture[temp]
-                #     if text != current_character:
-                #         gesture_count = 0  # Reset the gesture count if a different character is detected
-                #     else:
-                #         gesture_count += 1  # Increment the gesture count if the same character is detected
-
-                #     if gesture_count >= gesture_threshold:
-                #         if text != last_character:
-                #             sentence += text  # Add recognized letter to sentence
-                #             last_character = text
-                #         gesture_count = 0  # Reset the gesture count after adding the character
-                #     current_character = text
                 if temp < len(completed_sentences):
                     text = completed_sentences[temp]
                 else:
@@ -209,19 +196,6 @@ def use_gestures():
             elif len(hand_results) == 2:
                 combined_text = hand_results[1] + hand_results[0]
                 temp = int(combined_text)
-                # if temp in alphabet_gesture:
-                #     text = alphabet_gesture[temp]
-                #     if text != current_character:
-                #         gesture_count = 0  # Reset the gesture count if a different character is detected
-                #     else:
-                #         gesture_count += 1  # Increment the gesture count if the same character is detected
-
-                #     if gesture_count >= gesture_threshold:
-                #         if text != last_character:
-                #             sentence += text  # Add recognized letter to sentence
-                #             last_character = text
-                #         gesture_count = 0  # Reset the gesture count after adding the character
-                #     current_character = text
                 if temp < len(completed_sentences):
                     text = completed_sentences[temp]
                 else:
